@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VOOMA Protection Profile</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div class="wrap">
+    <div class="hero">
+      <div class="eyebrow">VOOMA Protection Profile</div>
+      <h1>Build a smarter quote request.</h1>
+      <p>
+        This guided intake is designed to feel more like Risk Advisor than a basic web form. It adapts to home, auto, and umbrella, can route prospects into Canopy Connect for current policy data, sends structured data into Zapier, and finishes by moving the prospect into a quote review meeting in Calendly.
+      </p>
+    </div>
+
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="small">Progress</div>
+        <div class="progress"><div id="progressBar"></div></div>
+        <div class="steps" id="stepList"></div>
+        <div class="callout">
+          <strong>Setup before going live</strong>
+          <div class="small">
+            Add your real Zapier hook URL, Calendly event URL, and Canopy Connect link in the config block near the top of the script.
+          </div>
+        </div>
+      </aside>
+
+      <main class="panel">
+        <form id="riskForm" novalidate>
+          <section class="step" data-step="intro">
+            <h2 class="section-title">Start here</h2>
+            <p class="section-sub">We’ll build a structured protection profile so you can quote faster and position better coverage.</p>
+            <div class="grid">
+              <div class="field span-6">
+                <label for="fullName">Full name</label>
+                <input id="fullName" name="fullName" autocomplete="name" required />
+                <div class="danger">Please add the prospect’s name.</div>
+              </div>
+              <div class="field span-6">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" autocomplete="email" required />
+                <div class="danger">Please add a valid email.</div>
+              </div>
+              <div class="field span-6">
+                <label for="phone">Phone</label>
+                <input id="phone" name="phone" type="tel" autocomplete="tel" required />
+                <div class="danger">Please add a valid phone number.</div>
+              </div>
+              <div class="field span-6">
+                <label for="currentAddress">Current address</label>
+                <input id="currentAddress" name="currentAddress" autocomplete="street-address" placeholder="Start typing the current address" />
+                <div class="small" id="currentAddressHelp">Optional: connect Google Places to suggest and standardize addresses as the client types.</div>
+                <input id="currentCity" name="currentCity" type="hidden" />
+                <input id="currentState" name="currentState" type="hidden" />
+                <input id="currentPostalCode" name="currentPostalCode" type="hidden" />
+                <input id="currentPlaceId" name="currentPlaceId" type="hidden" />
+              </div>
+              <div class="field span-3">
+                <label for="yearsAtCurrentAddress">How long have you lived there?</label>
+                <input id="yearsAtCurrentAddress" name="yearsAtCurrentAddress" placeholder="Ex: 3 years" />
+              </div>
+              <div class="field span-3">
+                <label for="residenceStatus">Do you rent or own?</label>
+                <select id="residenceStatus" name="residenceStatus">
+                  <option>Own</option>
+                  <option>Rent</option>
+                </select>
+              </div>
+              <div class="field span-6">
+                <label for="zip">ZIP code</label>
+                <input id="zip" name="zip" inputmode="numeric" />
+              </div>
+              <div class="field span-6">
+                <label for="contactPreference">Preferred contact method</label>
+                <select id="contactPreference" name="contactPreference">
+                  <option value="Phone">Phone</option>
+                  <option value="Email">Email</option>
+                  <option value="Text">Text</option>
+                </select>
+              </div>
+              <div class="field span-6">
+                <label for="timeline">When are you looking to make a switch?</label>
+                <select id="timeline" name="timeline">
+                  <option value="ASAP">ASAP</option>
+                  <option value="Within 30 days">Within 30 days</option>
+                  <option value="At renewal">At renewal</option>
+                  <option value="Just shopping">Just shopping</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <section class="step hidden" data-step="coverage">
+            <h2 class="section-title">What are we quoting?</h2>
+            <p class="section-sub">Choose one or more coverage types. The form will adapt automatically.</p>
+            <div class="choices" id="coverageChoices">
+              <label class="choice">
+                <input type="checkbox" name="coverage" value="Home" />
+                <strong>Home</strong>
+                <span>Homeowners, condos, seasonal, rental, or dwelling protection.</span>
+              </label>
+              <label class="choice">
+                <input type="checkbox" name="coverage" value="Auto" />
+                <strong>Auto</strong>
+                <span>Vehicles, drivers, usage, and liability structure.</span>
+              </label>
+              <label class="choice">
+                <input type="checkbox" name="coverage" value="Umbrella" />
+                <strong>Umbrella</strong>
+                <span>Extra liability protection above home and auto.</span>
+              </label>
+            </div>
+            <div class="danger" id="coverageError">Please choose at least one coverage type.</div>
+            <div class="callout">
+              <strong>VOOMA angle</strong>
+              <div class="small">You’re not just collecting information here. You’re setting up a cleaner quote review and a better coverage conversation.</div>
+            </div>
+          </section>
+
+          <section class="step hidden" data-step="canopy">
+            <h2 class="section-title">Current insurance info</h2>
+            <p class="section-sub">You can speed this up by letting the prospect securely share their current policy data through Canopy Connect.</p>
+            <div class="choices" id="canopyChoices">
+              <label class="choice selected">
+                <input type="radio" name="canopyMode" value="Yes" checked />
+                <strong>Yes, use Canopy Connect</strong>
+                <span>Best for pulling current premiums, coverages, limits, deductibles, and dec pages.</span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="canopyMode" value="No" />
+                <strong>No, I’ll fill it out manually</strong>
+                <span>Keep the form going and collect the current insurance details by hand.</span>
+              </label>
+            </div>
+
+            <div id="canopyBlock" class="callout">
+              <strong>Launch Canopy Connect</strong>
+              <div class="small" style="margin-bottom:10px;">Open your hosted Canopy link in a new tab. When the client finishes there, come back here and continue.</div>
+              <a id="canopyLink" class="button-link ghost" target="_blank" rel="noopener">Open Canopy Connect</a>
+              <div class="grid" style="margin-top:14px;">
+                <div class="field span-6">
+                  <label for="canopyStatus">Canopy status</label>
+                  <select id="canopyStatus" name="canopyStatus">
+                    <option value="Not started">Not started</option>
+                    <option value="Sent to client">Sent to client</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
+                <div class="field span-6">
+                  <label for="currentCarrier">Current carrier (optional)</label>
+                  <input id="currentCarrier" name="currentCarrier" placeholder="Ex: Travelers" />
+                </div>
+              </div>
+            </div>
+
+            <div id="manualInsuranceBlock" class="hidden">
+              <div class="grid">
+                <div class="field span-6">
+                  <label for="manualCarrier">Current carrier</label>
+                  <input id="manualCarrier" name="manualCarrier" />
+                </div>
+                <div class="field span-6">
+                  <label for="manualRenewal">Renewal date</label>
+                  <input id="manualRenewal" name="manualRenewal" type="date" />
+                  <div class="danger">Renewal date cannot be in the past.</div>
+                </div>
+                <div class="field span-6">
+                  <label for="currentPremium">Current premium</label>
+                  <input id="currentPremium" name="currentPremium" />
+                </div>
+                <div class="field span-6">
+                  <label for="currentLiability">Current liability limits</label>
+                  <input id="currentLiability" name="currentLiability" placeholder="Ex: 250/500 or $300,000" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="step hidden" data-step="home">
+            <h2 class="section-title">Home profile</h2>
+            <p class="section-sub">Only shown if home was selected.</p>
+            <div class="grid">
+              <div class="field span-6">
+                <label for="homeAddressMode">Home address</label>
+                <select id="homeAddressMode" name="homeAddressMode">
+                  <option value="current">Use current address</option>
+                  <option value="new">Use a new address</option>
+                </select>
+              </div>
+              <div class="field span-6"><label for="occupancy">Occupancy</label><select id="occupancy" name="occupancy"><option>Primary residence</option><option>Seasonal / secondary</option><option>Rental property</option><option>Condo</option></select></div>
+              <div class="field" id="currentAddressSelectedBlock">
+                <label for="propertyAddressCurrent">Property address</label>
+                <input id="propertyAddressCurrent" name="propertyAddressCurrent" autocomplete="street-address" readonly />
+                <div class="small">Using the current address from the contact section above.</div>
+              </div>
+              <div class="field hidden" id="newAddressBlock">
+                <label for="propertyAddress">New property address</label>
+                <input id="propertyAddress" name="propertyAddress" autocomplete="street-address" placeholder="Start typing the new address" />
+                <div class="small" id="propertyAddressHelp">Optional: connect Google Places to suggest and standardize addresses as the client types.</div>
+              </div>
+              <input id="propertyCity" name="propertyCity" type="hidden" />
+              <input id="propertyState" name="propertyState" type="hidden" />
+              <input id="propertyPostalCode" name="propertyPostalCode" type="hidden" />
+              <input id="propertyPlaceId" name="propertyPlaceId" type="hidden" />
+              <div class="field span-4"><label for="yearBuilt">Year built</label><input id="yearBuilt" name="yearBuilt" inputmode="numeric" /></div>
+              <div class="field span-4"><label for="squareFeet">Square feet</label><input id="squareFeet" name="squareFeet" inputmode="numeric" /></div>
+              <div class="field span-4"><label for="roofAge">Roof age</label><input id="roofAge" name="roofAge" /></div>
+              <div class="field span-6"><label for="constructionType">Construction type</label><select id="constructionType" name="constructionType"><option>Frame</option><option>Masonry</option><option>Brick veneer</option><option>Other</option></select></div>
+              <div class="field span-6"><label for="foundationType">Foundation type</label><select id="foundationType" name="foundationType"><option>Basement</option><option>Crawl space</option><option>Slab</option><option>Pier / posts</option><option>Other</option></select></div>
+              <div class="field span-6"><label for="heatingType">Heating system type</label><select id="heatingType" name="heatingType"><option>Forced hot air</option><option>Hot water / steam</option><option>Electric baseboard</option><option>Heat pump</option><option>Radiant</option><option>Wood / pellet stove supplemental</option><option>Other</option></select></div>
+              <div class="field span-6"><label for="heatingUpdatedYear">When was the heating system last replaced or updated?</label><input id="heatingUpdatedYear" name="heatingUpdatedYear" placeholder="Ex: 2019 or original" /></div>
+              <div class="field span-6"><label for="hasBasement">Is there a basement?</label><select id="hasBasement" name="hasBasement"><option>No</option><option>Yes</option></select></div>
+              <div class="field span-6 hidden" id="basementFinishedField"><label for="basementFinished">If yes, is it finished?</label><select id="basementFinished" name="basementFinished"><option>No</option><option>Partially finished</option><option>Yes</option></select></div>
+              <div class="field span-4"><label for="pool">Pool?</label><select id="pool" name="pool"><option>No</option><option>Yes</option></select></div>
+              <div class="field span-4"><label for="dog">Dog?</label><select id="dog" name="dog"><option>No</option><option>Yes</option></select></div>
+              <div class="field span-4"><label for="claimsHome">Home claims in last 5 years</label><select id="claimsHome" name="claimsHome"><option>0</option><option>1</option><option>2+</option></select></div>
+              <div class="field"><label for="homeNotes">Anything else we should know about the property?</label><textarea id="homeNotes" name="homeNotes"></textarea></div>
+            </div>
+          </section>
+
+          <section class="step hidden" data-step="auto">
+            <h2 class="section-title">Auto profile</h2>
+            <p class="section-sub">Only shown if auto was selected.</p>
+            <div class="module-head"><h3>Vehicles</h3><button class="secondary" type="button" id="addVehicle">+ Add vehicle</button></div>
+            <div id="vehicleList"></div>
+            <div class="module-head" style="margin-top:20px;"><h3>Drivers</h3><button class="secondary" type="button" id="addDriver">+ Add driver</button></div>
+            <div id="driverList"></div>
+            <div class="grid" style="margin-top:16px;">
+              <div class="field span-6"><label for="claimsAuto">Auto accidents / violations in last 5 years</label><select id="claimsAuto" name="claimsAuto"><option>0</option><option>1</option><option>2+</option></select></div>
+              <div class="field span-6"><label for="liabilityInterest">Interested in higher liability limits?</label><select id="liabilityInterest" name="liabilityInterest"><option>Yes</option><option>No</option><option>Not sure</option></select></div>
+            </div>
+          </section>
+
+          <section class="step hidden" data-step="umbrella">
+            <h2 class="section-title">Umbrella profile</h2>
+            <p class="section-sub">Only shown if umbrella was selected.</p>
+            <div class="grid">
+              <div class="field span-4"><label for="umbrellaLimit">Desired limit</label><select id="umbrellaLimit" name="umbrellaLimit"><option>$1M</option><option>$2M</option><option>$3M</option><option>$5M+</option></select></div>
+              <div class="field span-4"><label for="youngDrivers">Any drivers under 25?</label><select id="youngDrivers" name="youngDrivers"><option>No</option><option>Yes</option></select></div>
+              <div class="field span-4"><label for="otherProperties">Any other properties?</label><select id="otherProperties" name="otherProperties"><option>No</option><option>Yes</option></select></div>
+              <div class="field span-6"><label for="underlyingHomeLimit">Current home liability limit</label><input id="underlyingHomeLimit" name="underlyingHomeLimit" placeholder="Ex: $300,000" /></div>
+              <div class="field span-6"><label for="underlyingAutoLimit">Current auto liability limits</label><input id="underlyingAutoLimit" name="underlyingAutoLimit" placeholder="Ex: 250/500" /></div>
+            </div>
+          </section>
+
+          <section class="step hidden" data-step="review">
+            <h2 class="section-title">Review and handoff</h2>
+            <p class="section-sub">This last step sends structured data to Zapier, then pushes the prospect into a quote review appointment in Calendly.</p>
+            <div class="review" id="reviewPane"></div>
+            <div class="grid" style="margin-top:14px;">
+              <div class="field span-6"><label for="notes">Internal notes / referral details</label><textarea id="notes" name="notes"></textarea></div>
+              <div class="field span-6"><label for="referralSource">Referral source</label><input id="referralSource" name="referralSource" placeholder="Mortgage broker, realtor, past client, website, etc." /></div>
+            </div>
+            <div class="status" id="statusBox">Ready to submit.</div>
+          </section>
+
+          <div class="btn-row">
+            <button type="button" class="secondary hidden" id="backBtn">Back</button>
+            <button type="button" class="primary" id="nextBtn">Continue</button>
+            <button type="submit" class="primary hidden" id="submitBtn">Send to Zapier + book review</button>
+          </div>
+        </form>
+      </main>
+    </div>
+  </div>
+
+  <template id="vehicleTemplate">
+    <div class="module-card vehicle-card">
+      <div class="module-head"><h3>Vehicle <span class="vehicle-number"></span></h3><button class="secondary remove-item" type="button">Remove</button></div>
+      <div class="grid">
+        <div class="field span-3"><label>Year</label><input data-name="year" /></div>
+        <div class="field span-3"><label>Make</label><input data-name="make" /></div>
+        <div class="field span-3"><label>Model</label><input data-name="model" /></div>
+        <div class="field span-3"><label>VIN (optional)</label><input data-name="vin" /></div>
+        <div class="field span-6"><label>Ownership</label><select data-name="ownership"><option>Owned</option><option>Financed</option><option>Leased</option></select></div>
+        <div class="field span-6"><label>Use</label><select data-name="use"><option>Commute</option><option>Pleasure</option><option>Business</option><option>Mixed use</option></select></div>
+        <div class="field span-6"><label>Annual mileage</label><input data-name="annualMileage" /></div>
+        <div class="field span-6"><label>Garaging ZIP</label><input data-name="garagingZip" /></div>
+      </div>
+    </div>
+  </template>
+
+  <template id="driverTemplate">
+    <div class="module-card driver-card">
+      <div class="module-head"><h3>Driver <span class="driver-number"></span></h3><button class="secondary remove-item" type="button">Remove</button></div>
+      <div class="grid">
+        <div class="field span-6"><label>Name</label><input data-name="name" /></div>
+        <div class="field span-3"><label>Date of birth</label><input type="date" data-name="dob" /></div>
+        <div class="field span-3"><label>Marital status</label><select data-name="maritalStatus"><option>Single</option><option>Married</option><option>Other</option></select></div>
+        <div class="field span-6"><label>License state / number</label><input data-name="license" /></div>
+        <div class="field span-3"><label>Good student?</label><select data-name="goodStudent"><option>No</option><option>Yes</option></select></div>
+        <div class="field span-3"><label>Defensive driver?</label><select data-name="defensiveDriver"><option>No</option><option>Yes</option></select></div>
+      </div>
+    </div>
+  </template>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
